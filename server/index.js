@@ -4,12 +4,14 @@ const cors = require("cors");
 
 const app = express();
 
+const signUp = require("./routes/userAuth/signUp");
 const addProblem = require("./routes/problem/addProblem");
 const getProblems = require("./routes/problem/problemList");
 
 app.use(cors());
 app.use(express.json());
 
+app.use("/", signUp);
 app.use("/", addProblem);
 app.use("/", getProblems);
 
