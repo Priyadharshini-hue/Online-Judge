@@ -1,27 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Container, Table, Button, Dropdown, Pagination, Badge, Spinner } from "react-bootstrap";
 import axios from "axios";
+import { BACK_SERVER_URL } from "../../config/config";
 
 const PromblemList = () => {
-  const [problem, setProblem] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [problemsPerPage] = useState(7); // If 5 => 20 pages
+  const [problemsPerPage] = useState(7); // If 5 => 20 pages 
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchPosts = async () => {
       setLoading(true);
-      const res = await axios.get("/getProblems");
-      setProblem(res.data);
 
+      try {
+        const res = await axios.get(`${BACK_SERVER_URL}/getProblems`);
+        setData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
       setLoading(false);
     };
-    fetchData();
+    fetchPosts();
   }, []);
 
   const indexOfLastProblem = currentPage * problemsPerPage;
   const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
-  const currentProblems = problem.slice(indexOfFirstProblem, indexOfLastProblem);
+  const currentProblems = data.slice(indexOfFirstProblem, indexOfLastProblem);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -33,7 +38,7 @@ const PromblemList = () => {
   };
 
   const maxPagesInRow = 10;
-  const totalPages = Math.ceil(problem.length / problemsPerPage);
+  const totalPages = Math.ceil(data.length / problemsPerPage);
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
@@ -91,7 +96,7 @@ const PromblemList = () => {
     <Container className="">
       {loading ? (
         <div className="d-flex justify-content-center">
-          <Spinner animation="border" variant="dark" /> Loading....
+          <Spinner animation="border" variant="dark" />
         </div>
       ) : (
         <div className="mt-1">
@@ -104,9 +109,9 @@ const PromblemList = () => {
               </thead>
               <tbody>
                 {currentProblems.map((problem) => (
-                  <tr key={problem.id}>
-                    <td className="d-flex justify-content-between align-items-center">{problem.problemTitle}
-                      <Badge pill bg="dark">hard</Badge>
+                  <tr key={problem._id}>
+                    <td className="d-flex justify-content-between align-items-center">{problem.title}
+                      <Badge pill bg="dark"></Badge>
                       <Dropdown>
                         <Dropdown.Toggle className="  p-1" variant='outline-dark' >
                         </Dropdown.Toggle>
