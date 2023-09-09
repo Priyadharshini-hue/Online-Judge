@@ -6,6 +6,7 @@ import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
 import ResetPassword from "./components/auth/ResetPassword";
 import AddProblem from "./components/problems/AddProblem";
+import ProblemList from "./components/problems/ProblemList";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/resetPassword" element={<ResetPassword />} />
           <Route path="/addProblem" element={<AddProblem />} />
+          <Route path="/getProblems" element={<ProblemList />} />
         </Routes>
       </div>
     </Router>
