@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
 const problemSchema = new mongoose.Schema({
-  problemTitle: {
+  title: {
     type: String,
     required: true,
   },
-  problemStatement: {
+  statement: {
     type: String,
     required: true,
   },
-  problemDifficulty: {
+  difficulty: {
     type: String,
     required: true,
   },
