@@ -83,6 +83,18 @@ const AddProblem = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(e);
+
+        if (Object.keys(errors).length === 0) {
+            try {
+                const result = await axios.post('/addProblem', {
+                    problemTitle, problemStatement, problemDifficulty, sampleInput, sampleOutput
+                })
+                console.log(result.data);
+
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
 
     return (
