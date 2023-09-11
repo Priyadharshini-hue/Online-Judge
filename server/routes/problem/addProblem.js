@@ -1,18 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const Problem = require("../../model/Problem");
+const problemModel = require("../../model/problemModel");
 
 router.post("/addProblem", async (req, res) => {
   const { title, statement, difficulty, sampleInput, sampleOutput } = req.body;
 
   try {
-    const problem = await Problem.findOne({ title }); 
+    const problem = await problemModel.findOne({ title }); 
 
     if (problem) {
       res.status(201).json({ message: "Problem ", problem });
     } else {
-      const problem = await Problem.create({
+      const problem = await problemModel.create({
         title,
         statement,
         difficulty,
