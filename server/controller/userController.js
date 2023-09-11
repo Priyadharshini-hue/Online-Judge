@@ -14,7 +14,8 @@ const getUser = async (req, res) => {
     if (!user) {
       res.status(202).json("user not found");
     } else {
-      const passwordMatch = await bcrypt.compare(password, user.password);
+      const passwordMatch = bcrypt.compare(password, user.password);
+
       if (passwordMatch) {
         const token = createToken(user._id);
         res.status(200).json({ msg: "Present user", token, expiresIn: "1h" });
@@ -29,11 +30,16 @@ const getUser = async (req, res) => {
 
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
-  try {
-    const user = await userModel.findOne({ email });
 
-    if (user) {
-      res.status(201).json("Present user");
+  try {
+    const existingNameUser = await userModel.findOne({ name });
+
+    const existingEmailUser = await userModel.findOne({ email });
+
+    if (existingNameUser) {
+      res.status(201).json("Username already exists");
+    } else if (existingEmailUser) {
+      res.status(201).json("Email already exists");
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
 

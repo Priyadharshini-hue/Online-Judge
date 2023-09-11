@@ -102,12 +102,15 @@ const SignUp = () => {
 
         if (Object.keys(errors).length === 0) {
 
-            axios.post(`${BACK_SERVER_URL}/signUp`, { name: name, email: email, password: password })
-                .then(result => {
+            axios
+                .post(`${BACK_SERVER_URL}/signUp`, { name: name, email: email, password: password })
+                .then((result) => {
                     if (result.status === 201) {
-                        setMessage("Account exists, please sign in !!");
+                        setMessage("Username or email already exists. Please use a different one.");
+                        console.log("Username or email already exists. Please use a different one.");
                     } else if (result.status === 200) {
-                        setMessage("Account created successfully !!");
+                        setMessage("Account created successfully!!");
+                        console.log("Account created successfully!!");
                     }
                     setName("");
                     setEmail("");
