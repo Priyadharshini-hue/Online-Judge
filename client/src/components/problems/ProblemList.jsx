@@ -3,7 +3,7 @@ import { Container, Table, Button, Dropdown, Pagination, Badge, Spinner } from "
 import axios from "axios";
 import { BACK_SERVER_URL } from "../../config/config";
 
-const PromblemList = () => {
+const ProblemList = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,7 +15,8 @@ const PromblemList = () => {
 
       try {
         const res = await axios.get(`${BACK_SERVER_URL}/getProblems`);
-        setData(res.data);
+        // console.log(res.data);
+        setData(res.data.data);
       } catch (error) {
         console.log(error);
       }
@@ -111,9 +112,9 @@ const PromblemList = () => {
                 {currentProblems.map((problem) => (
                   <tr key={problem._id}>
                     <td className="d-flex justify-content-between align-items-center">{problem.title}
-                      <Badge pill bg="dark"></Badge>
+                      <Badge pill bg="dark">{problem.difficulty}</Badge>
                       <Dropdown>
-                        <Dropdown.Toggle className="  p-1" variant='outline-dark' >
+                        <Dropdown.Toggle className="p-1" variant='outline-dark' >
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                           <Dropdown.Item href="/addProblem">Edit</Dropdown.Item>
@@ -141,4 +142,4 @@ const PromblemList = () => {
   );
 };
 
-export default PromblemList;
+export default ProblemList;
