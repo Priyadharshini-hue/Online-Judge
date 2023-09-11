@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Card, Form, Button, Image, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import image from '../../images/signUp.svg';
+import { BACK_SERVER_URL } from '../../config/config'
 
 const SignUp = () => {
 
@@ -101,7 +102,7 @@ const SignUp = () => {
 
         if (Object.keys(errors).length === 0) {
 
-            axios.post('/signUp', { name: name, email: email, password: password })
+            axios.post(`${BACK_SERVER_URL}/signUp`, { name: name, email: email, password: password })
                 .then(result => {
                     if (result.status === 201) {
                         setMessage("Account exists, please sign in !!");
