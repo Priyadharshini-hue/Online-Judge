@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import image from '../../images/signIn.svg';
 import { BACK_SERVER_URL } from '../../config/config'
+import { useAuth } from '../../context/AuthContext';
 
 const SignIn = () => {
 
@@ -13,6 +14,8 @@ const SignIn = () => {
     const [message, setMessage] = useState();
 
     const navigate = useNavigate();
+
+    const { login } = useAuth();
 
     const inputValidation = () => {
         const errors = {};
@@ -49,7 +52,8 @@ const SignIn = () => {
                     } else if (result.status === 202) {
                         setMessage("User not found !!")
                     } else if (result.status === 200) {
-                        //  console.log(result);
+                        // console.log(result);
+                        login(result.data.token);
 
                         setMessage('Signing in....');
                         setPassword("");
