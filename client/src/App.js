@@ -7,11 +7,12 @@ import SignUp from "./components/auth/SignUp";
 import ResetPassword from "./components/auth/ResetPassword";
 import AddProblem from "./components/problems/AddProblem";
 import ProblemList from "./components/problems/ProblemList";
+import { AuthProvider } from "./context/AuthContext";
 
-function App() {
+const App = () => {
   return (
     <Router>
-      <div>
+      <AuthProvider>
         <NavigationBar />
         <Routes>
           <Route path="/user/signIn" element={<SignIn />} />
@@ -20,9 +21,9 @@ function App() {
           <Route path="/problems/add" element={<AddProblem />} />
           <Route path="/problems/list" element={<ProblemList />} />
         </Routes>
-      </div>
+      </AuthProvider>
     </Router>
   );
-}
+};
 
 export default App;
