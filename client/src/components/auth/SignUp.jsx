@@ -68,7 +68,7 @@ const SignUp = () => {
             errorsCopy.password = 'Password is required';
         } else {
             if (value.trim().length !== value.length) {
-                errorsCopy.password = 'Password should not contain whitespaces';
+                errorsCopy.password = 'Password should not contain whitespace';
             } else if (value.length < 8) {
                 errorsCopy.password = 'Password is too short';
             } else {
@@ -98,26 +98,25 @@ const SignUp = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(e);
+        // console.log(e);
 
         if (Object.keys(errors).length === 0) {
-
             axios
-                .post(`${BACK_SERVER_URL}/signUp`, { name: name, email: email, password: password })
+                .post(`${BACK_SERVER_URL}/user/signUp`, { name: name, email: email, password: password })
                 .then((result) => {
                     if (result.status === 201) {
                         setMessage("Username or email already exists. Please use a different one.");
-                        console.log("Username or email already exists. Please use a different one.");
+                        // console.log("Username or email already exists. Please use a different one.");
                     } else if (result.status === 200) {
                         setMessage("Account created successfully!!");
-                        console.log("Account created successfully!!");
+                        // console.log("Account created successfully!!");
                     }
-                    setName("");
-                    setEmail("");
-                    setPassword("");
-                    setConfirmPassword("");
                 })
                 .catch(err => { console.log(err); })
+            setName("");
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
         }
     };
 
@@ -174,7 +173,7 @@ const SignUp = () => {
                     <Button className="w-100" variant="outline-dark" type='submit'>Submit</Button>
                     <Form.Text className="d-flex justify-content-center mt-2">
                         <span> Already have an account? </span> &nbsp;
-                        <a className="fw-bold text-dark text-decoration-none" href="/">Sign In</a>
+                        <a className="fw-bold text-dark text-decoration-none" href="/user/signIn">Sign In</a>
                     </Form.Text>
                 </Form>
             </Card>
@@ -182,4 +181,4 @@ const SignUp = () => {
     )
 }
 
-export default SignUp
+export default SignUp;

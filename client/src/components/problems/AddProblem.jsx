@@ -87,17 +87,19 @@ const AddProblem = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(e);
+        // console.log(e);
 
         if (Object.keys(errors).length === 0) {
             try {
-                const result = await axios.post(`${BACK_SERVER_URL}/addProblem`, {
+                const result = await axios.post(`${BACK_SERVER_URL}/problems/add`, {
                     title, statement, difficulty, sampleInput, sampleOutput
-                })
+                });
                 if (result.status === 201) {
-                    setMessage("Problem exsists already!!");
+                    setMessage("Problem exists already!!");
+                    // console.log("Problem exists already!!");
                 } else {
                     setMessage("Problem created successfully");
+                    // console.log("Problem created successfully");
                 }
                 setShow(true);
                 setTitle('');
@@ -171,4 +173,4 @@ const AddProblem = () => {
     )
 }
 
-export default AddProblem
+export default AddProblem;

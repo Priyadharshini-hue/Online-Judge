@@ -11,13 +11,12 @@ const SignIn = () => {
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState();
+
     const navigate = useNavigate();
 
-    // input validation
     const inputValidation = () => {
         const errors = {};
 
-        // email validation
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!email.trim()) {
             errors.email = "Email is required";
@@ -25,11 +24,10 @@ const SignIn = () => {
             errors.email = "Invalid email address";
         }
 
-        // password validation
         if (!password.trim()) {
             errors.password = "Password is required";
         } else if (password.trim().length !== password.length) {
-            errors.password = "Password Should not contain whitespaces";
+            errors.password = "Password Should not contain whitespace";
         }
 
         setErrors(errors);
@@ -40,22 +38,24 @@ const SignIn = () => {
     const handleSubmit = (event) => {
 
         event.preventDefault();
-        console.log(event);
+        // console.log(event);
 
         if (inputValidation()) {
-            axios.post(`${BACK_SERVER_URL}/`, { email: email, password: password })
-                .then(result => { 
-                    if (result.status === 201) {   // incorrect password
+            axios.post(`${BACK_SERVER_URL}/user/signIn`, { email: email, password: password })
+                .then(result => {
+                    if (result.status === 201) {
                         setMessage('Incorrect Password !!')
                         setPassword("");
-                    } else if (result.status === 202) {  // user not found
+                    } else if (result.status === 202) {
                         setMessage("User not found !!")
-                    } else if (result.status === 200) {  // user exsists  
+                    } else if (result.status === 200) {
+                        //  console.log(result);
+
                         setMessage('Signing in....');
                         setPassword("");
                         setEmail("");
                         try {
-                            navigate("/getProblems");
+                            navigate("/problems/list");
                         } catch (err) {
                             console.log(err);
                         }
@@ -97,7 +97,7 @@ const SignIn = () => {
                     <Button className="w-100" variant="outline-dark" type='submit'>Submit</Button>
                     <Form.Text className=" d-flex justify-content-center mt-2">
                         <span className=""> Don't have an account?</span> &nbsp;
-                        <a className="fw-bold text-dark text-decoration-none" href="/signUp">Sign up</a>
+                        <a className="fw-bold text-dark text-decoration-none" href="/user/signUp">Sign up</a>
                     </Form.Text>
                     <Form.Text className=" d-flex justify-content-center mt-2">
                         <span className="">Forgot Password? </span> &nbsp;

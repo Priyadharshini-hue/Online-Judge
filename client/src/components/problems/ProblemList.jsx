@@ -7,14 +7,14 @@ const ProblemList = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [problemsPerPage] = useState(7); // If 5 => 20 pages 
+  const [problemsPerPage] = useState(7);
 
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
 
       try {
-        const res = await axios.get(`${BACK_SERVER_URL}/getProblems`);
+        const res = await axios.get(`${BACK_SERVER_URL}/problems/list`);
         // console.log(res.data);
         setData(res.data.data);
       } catch (error) {
@@ -34,7 +34,6 @@ const ProblemList = () => {
   };
 
   const handleDelete = () => {
-    // Add your logic for the "Delete" action here
     console.log('Delete button clicked');
   };
 
@@ -133,7 +132,7 @@ const ProblemList = () => {
             </Pagination>
           </div>
           <div className="d-flex justify-content-center">
-            <Button variant="outline-dark" href="/addProblem">Add Problem</Button>
+            <Button variant="outline-dark" href="/problems/add">Add Problem</Button>
           </div>
         </div>
       )}
