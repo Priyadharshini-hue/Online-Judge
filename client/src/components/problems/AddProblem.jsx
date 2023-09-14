@@ -91,9 +91,13 @@ const AddProblem = () => {
 
         if (Object.keys(errors).length === 0) {
             try {
+                const token = sessionStorage.getItem('jwtToken');
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
                 const result = await axios.post(`${BACK_SERVER_URL}/problems/add`, {
                     title, statement, difficulty, sampleInput, sampleOutput
-                });
+                }, { headers });
                 if (result.status === 201) {
                     setMessage("Problem exists already!!");
                     // console.log("Problem exists already!!");
@@ -129,7 +133,7 @@ const AddProblem = () => {
                     </InputGroup>
                     <InputGroup className="mb-3">
                         <InputGroup.Text>Problem Statement</InputGroup.Text>
-                        <Form.Control as="textarea" aria-label="With textarea" rows={4} required
+                        <Form.Control as="textarea" aria-label="With textarea" rows={5} required
                             value={statement} isInvalid={!!errors.statement}
                             onChange={handleStatement}
                         />
@@ -150,13 +154,13 @@ const AddProblem = () => {
                     </InputGroup>
                     <InputGroup className="mb-3">
                         <InputGroup.Text>Sample Input</InputGroup.Text>
-                        <Form.Control as="textarea" aria-label="With textarea" rows={3} required
+                        <Form.Control as="textarea" aria-label="With textarea" rows={4} required
                             value={sampleInput} isInvalid={!!errors.sampleInput}
                             onChange={handleSampleInput} />
                     </InputGroup>
                     <InputGroup className="mb-3">
                         <InputGroup.Text>Sample output</InputGroup.Text>
-                        <Form.Control as="textarea" aria-label="With textarea" rows={2} required
+                        <Form.Control as="textarea" aria-label="With textarea" rows={3} required
                             value={sampleOutput} isInvalid={!!errors.sampleOutput}
                             onChange={handleSampleOutput} />
                     </InputGroup>
