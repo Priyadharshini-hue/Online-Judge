@@ -8,13 +8,19 @@ const ProblemList = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [problemsPerPage] = useState(7);
+  const [fetchInterval] = useState(40000);
+
+  const token = sessionStorage.getItem('jwtToken');
 
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
 
       try {
-        const res = await axios.get(`${BACK_SERVER_URL}/problems/list`);
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+        const res = await axios.get(`${BACK_SERVER_URL}/problems/list`, { headers });
         // console.log(res.data);
         setData(res.data.data);
       } catch (error) {
@@ -23,7 +29,15 @@ const ProblemList = () => {
       setLoading(false);
     };
     fetchPosts();
-  }, []);
+
+    const intervalId = setInterval(() => {
+      fetchPosts();
+    }, fetchInterval);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [fetchInterval, token]);
 
   const indexOfLastProblem = currentPage * problemsPerPage;
   const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
@@ -33,10 +47,13 @@ const ProblemList = () => {
     setCurrentPage(pageNumber);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (problem) => {
     console.log('Delete button clicked');
   };
 
+  const handleEdit = (problem) => {
+    console.log("edit");
+  }
   const maxPagesInRow = 10;
   const totalPages = Math.ceil(data.length / problemsPerPage);
 
@@ -116,8 +133,8 @@ const ProblemList = () => {
                         <Dropdown.Toggle className="p-1" variant='outline-dark' >
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                          <Dropdown.Item href="/addProblem">Edit</Dropdown.Item>
-                          <Dropdown.Item onClick={handleDelete}>Delete</Dropdown.Item>
+                          <Dropdown.Item onClick={() => handleEdit(problem)}>Edit</Dropdown.Item>
+                          <Dropdown.Item onClick={() => handleDelete(problem)}>Delete</Dropdown.Item>
                         </Dropdown.Menu>
                       </Dropdown>
                     </td>
