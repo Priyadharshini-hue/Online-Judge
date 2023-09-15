@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Table, Button, Dropdown, Pagination, Badge, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { BACK_SERVER_URL } from "../../config/config";
+import jwtDecode from "jwt-decode";
 
 const ProblemList = () => {
   const [data, setData] = useState([]);
@@ -47,8 +48,31 @@ const ProblemList = () => {
     setCurrentPage(pageNumber);
   };
 
-  const handleDelete = (problem) => {
+  const decoded = jwtDecode(token);
+  const userId = decoded._id;
+
+  const handleDelete = async (problem) => {
     console.log('Delete button clicked');
+    // console.log(userId === problem.createdBy);
+    // console.log(userId);
+    if (userId !== problem.createdBy) {
+      console.log("Unauthorized access");
+    } else {
+      try {
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+        const result = await axios.delete(`${BACK_SERVER_URL}/problems/${problem._id}`,
+          { headers });
+
+        if (result.status === 200) {
+          setData((prevData) => prevData.filter((item) => item._id !== problem._id));
+          console.log("Problem deleted!!");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const handleEdit = (problem) => {
