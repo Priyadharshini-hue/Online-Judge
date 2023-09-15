@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Table, Button, Dropdown, Pagination, Badge, Spinner } from "react-bootstrap";
+import { Container, Table, Button, Dropdown, Pagination, Badge, Spinner, Modal } from "react-bootstrap";
 import axios from "axios";
 import { BACK_SERVER_URL } from "../../config/config";
 import jwtDecode from "jwt-decode";
@@ -9,7 +9,11 @@ const ProblemList = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [problemsPerPage] = useState(7);
+  const [message, setMessage] = useState('');
   const [fetchInterval] = useState(40000);
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
 
   const token = sessionStorage.getItem('jwtToken');
 
@@ -56,7 +60,8 @@ const ProblemList = () => {
     // console.log(userId === problem.createdBy);
     // console.log(userId);
     if (userId !== problem.createdBy) {
-      console.log("Unauthorized access");
+      setMessage("Unauthorized action. Only the problem owner can delete this.");
+      setShow(true);
     } else {
       try {
         const headers = {
@@ -177,6 +182,12 @@ const ProblemList = () => {
           </div>
         </div>
       )}
+      <Modal show={show} onHide={handleClose} centered>
+        <Modal.Header closeButton />
+        <Modal.Body className='d-flex '>
+          <p>{message}</p>
+        </Modal.Body>
+      </Modal>
     </Container>
 
   );
