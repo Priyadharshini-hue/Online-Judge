@@ -9,11 +9,13 @@ import AddProblem from "./components/problems/AddProblem";
 import ProblemList from "./components/problems/ProblemList";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/privateRoutes/PrivateRoutes";
+import DisableGoBackButton from "./components/auth/DisableGoBackButton";
 
 const App = () => {
   return (
     <Router>
       <AuthProvider>
+        <DisableGoBackButton />
         <NavigationBar />
         <Routes>
           <Route path="/user/signIn" element={<SignIn />} />
