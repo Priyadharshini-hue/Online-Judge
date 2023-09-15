@@ -2,6 +2,7 @@ const problemModel = require("../model/problemModel");
 
 const addProblem = async (req, res) => {
   const { title, statement, difficulty, sampleInput, sampleOutput } = req.body;
+  const createdBy = req.user._id;
 
   try {
     const problem = await problemModel.findOne({ title });
@@ -15,6 +16,7 @@ const addProblem = async (req, res) => {
         difficulty,
         sampleInput,
         sampleOutput,
+        createdBy,
       });
       res.json({ success: true, message: "Problem created", data: problem });
     }
@@ -31,15 +33,21 @@ const getProblems = async (req, res) => {
   try {
     const problems = await problemModel.find();
     res.status(200).json({ success: true, data: problems });
-  } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        error: "Internal Server Error",
-        message: err.message,
-      });
+  } catch (error) {
+    res.status(500).json(error);
   }
 };
 
-module.exports = { addProblem, getProblems };
+const deleteProblem = async (req, res) => {
+  const problem = await problemModel.findByIdAndDelete(req.params.problemId);
+  try {
+    if (!problem) {
+      return res.status(404).json({ message: "Problem not found" });
+    }
+    res.status(200).json({ message: "Problem deleted successfully" });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+module.exports = { addProblem, getProblems, deleteProblem };
