@@ -18,12 +18,14 @@ const getUser = async (req, res) => {
 
       if (passwordMatch) {
         const token = createToken(user._id);
-        res.status(200).json({ msg: "Present user", token, expiresIn: "1h" });
+        // console.log(token);
+        res.status(200).json({ msg: "Present user", token });
       } else {
         res.status(201).json("Wrong password");
       }
     }
   } catch (error) {
+    // console.log(error);
     res.json(error);
   }
 };
