@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Table, Button, Dropdown, Pagination, Badge, Spinner, Modal } from "react-bootstrap";
 import axios from "axios";
 import { BACK_SERVER_URL } from "../../config/config";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 
 const ProblemList = () => {
@@ -167,7 +167,8 @@ const ProblemList = () => {
               <tbody>
                 {currentProblems.map((problem) => (
                   <tr key={problem._id}>
-                    <td className="d-flex justify-content-between align-items-center">{problem.title}
+                    <td className="d-flex justify-content-between align-items-center"  >
+                      <Link to={`/problems/${problem._id}`}>{problem.title}</Link>
                       <Badge pill bg="dark">{problem.difficulty}</Badge>
                       <Dropdown>
                         <Dropdown.Toggle className="p-1" variant='outline-dark' >
