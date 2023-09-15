@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Table, Button, Dropdown, Pagination, Badge, Spinner, Modal } from "react-bootstrap";
 import axios from "axios";
 import { BACK_SERVER_URL } from "../../config/config";
+import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 
 const ProblemList = () => {
@@ -54,6 +55,7 @@ const ProblemList = () => {
 
   const decoded = jwtDecode(token);
   const userId = decoded._id;
+  const navigate = useNavigate();
 
   const handleDelete = async (problem) => {
     console.log('Delete button clicked');
@@ -81,8 +83,17 @@ const ProblemList = () => {
   };
 
   const handleEdit = (problem) => {
-    console.log("edit");
-  }
+    console.log("Edit button is clicked");
+    // console.log(userId === problem.createdBy);
+    // console.log(userId);
+    if (userId !== problem.createdBy) {
+      setMessage("Unauthorized action. Only the problem owner can edit this.");
+      setShow(true);
+    } else {
+      navigate(`/problems/edit/${problem._id}`);
+    }
+  };
+
   const maxPagesInRow = 10;
   const totalPages = Math.ceil(data.length / problemsPerPage);
 
