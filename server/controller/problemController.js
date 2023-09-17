@@ -50,6 +50,22 @@ const getProblem = async (req, res) => {
   }
 };
 
+const updateProblem = async (req, res) => {
+  try {
+    const problem = await problemModel.findByIdAndUpdate(
+      req.params.problemId,
+      req.body,
+      { new: true }
+    );
+    if (!problem) {
+      return res.status(404).json({ message: "Problem not found" });
+    }
+    res.send(problem);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const deleteProblem = async (req, res) => {
   const problem = await problemModel.findByIdAndDelete(req.params.problemId);
   try {
@@ -66,5 +82,6 @@ module.exports = {
   addProblem,
   getProblems,
   getProblem,
+  updateProblem,
   deleteProblem,
 };
