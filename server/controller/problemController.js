@@ -38,6 +38,18 @@ const getProblems = async (req, res) => {
   }
 };
 
+const getProblem = async (req, res) => {
+  try {
+    if (!problem) {
+      return res.status(404).json({ message: "Problem not found" });
+    }
+    const problem = await problemModel.findById(req.params.problemId);
+    res.status(200).json(problem);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const deleteProblem = async (req, res) => {
   const problem = await problemModel.findByIdAndDelete(req.params.problemId);
   try {
@@ -50,4 +62,9 @@ const deleteProblem = async (req, res) => {
   }
 };
 
-module.exports = { addProblem, getProblems, deleteProblem };
+module.exports = {
+  addProblem,
+  getProblems,
+  getProblem,
+  deleteProblem,
+};
