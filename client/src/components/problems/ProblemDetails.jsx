@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { BACK_SERVER_URL } from "../../config/config"
 import { Badge, Card } from 'react-bootstrap';
+import Compiler from "./Compiler";
 
 const ProblemDetails = () => {
   const { problemId } = useParams();
@@ -42,7 +43,7 @@ const ProblemDetails = () => {
           </Card.Body>
         </Card>
       </div>
-      <div className="rightSide flex-grow-1 w-50">compiler</div>
+      <div className="rightSide flex-grow-1 w-50"><Compiler /></div>
     </div >
   );
 };
