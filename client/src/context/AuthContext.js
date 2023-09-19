@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (authToken) => {
     sessionStorage.setItem("jwtToken", authToken);
+    setToken(authToken);
 
     const decoded = jwtDecode(authToken);
     const expirationTimestamp = decoded.exp;
@@ -39,6 +40,9 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkTokenExpiration = () => {
+      const storedToken = sessionStorage.getItem("jwtToken");
+      setToken(storedToken);
+
       if (token && tokenExpiration) {
         const currentTime = new Date().getTime();
         const expirationTime = new Date(tokenExpiration).getTime();
@@ -56,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   }, [token, tokenExpiration]);
 
   return (
-    <AuthContext.Provider value={{ login, logout }}>
+    <AuthContext.Provider value={{ token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
