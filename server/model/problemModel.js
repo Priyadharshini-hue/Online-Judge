@@ -1,5 +1,19 @@
 const mongoose = require("mongoose");
 
+const testCaseSchema = new mongoose.Schema(
+  {
+    input: {
+      type: String,
+      required: true,
+    },
+    output: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false } // This option prevents MongoDB from generating separate IDs for test cases
+);
+
 const problemSchema = new mongoose.Schema(
   {
     title: {
@@ -14,14 +28,7 @@ const problemSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    sampleInput: {
-      type: String,
-      required: true,
-    },
-    sampleOutput: {
-      type: String,
-      required: true,
-    },
+    testCases: [testCaseSchema],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
