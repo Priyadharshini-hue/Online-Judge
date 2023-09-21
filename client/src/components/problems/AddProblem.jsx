@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Card, Form, Button, InputGroup, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import { useProblemState } from './ProblemState';
-import { BACK_SERVER_URL } from '../../config/config';
+import { Card, Form, Button, InputGroup, Alert } from 'react-bootstrap'; 
+import { useProblemState } from './ProblemState'; 
 import { createProblem } from '../../services/api';
 import { useAuth } from "../../context/AuthContext";
 
