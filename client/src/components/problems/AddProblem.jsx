@@ -2,101 +2,68 @@ import React, { useState } from 'react';
 import { Card, Form, Button, InputGroup, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import { BACK_SERVER_URL } from '../../config/config';
+import { useAuth } from "../../context/AuthContext";
 
 const AddProblem = () => {
 
-    const [title, setTitle] = useState('');
-    const [statement, setStatement] = useState('');
-    const [difficulty, setDifficulty] = useState('');
-    const [sampleInput, setSampleInput] = useState('');
-    const [sampleOutput, setSampleOutput] = useState('');
-    const [errors, setErrors] = useState({});
+    const [problemState, setProblemState] = useState({
+        title: '',
+        statement: '',
+        difficulty: '',
+        testCases: [],
+        errors: {},
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setProblemState((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+        if (name === "title" || name === "statement") {
+            validateField(name, value);
+        }
+    };
+
+    const validateField = (fieldName, value) => {
+        const maxCharacters = fieldName === "title" ? 120 : 1000;
+        const errorMessage = generateErrorMessage(fieldName, value, maxCharacters);
+        setProblemState((prevState) => ({
+            ...prevState,
+            errors: {
+                ...prevState.errors,
+                [fieldName]: errorMessage,
+            },
+        }));
+    };
+
+    const generateErrorMessage = (fieldName, value, maxCharacters) => {
+        if (value.length > maxCharacters) {
+            return `You have reached your maximum limit of ${maxCharacters} characters allowed for ${fieldName}`;
+        }
+        return '';
+    };
+
     const [message, setMessage] = useState('');
     const [show, setShow] = useState(false);
+    const { token } = useAuth();
 
     const handleClose = () => setShow(false);
-
-    const handleTitle = (e) => {
-        const newTitle = e.target.value;
-        setTitle(newTitle);
-        validateTitle(newTitle);
-    }
-
-    const validateTitle = (value) => {
-        const errorsCopy = { ...errors };
-        if (value.length > 120) {
-            errorsCopy.title = "You have reached your maximum limit of characters allowed";
-        } else {
-            delete errorsCopy.title;
-        }
-        setErrors(errorsCopy);
-    }
-
-    const handleStatement = (e) => {
-        const newStatement = e.target.value;
-        setStatement(newStatement);
-        validateStatement(newStatement);
-    }
-
-    const validateStatement = (value) => {
-        const errorsCopy = { ...errors };
-        if (value.length > 1000) {
-            errorsCopy.statement = "You have reached your maximum limit of characters allowed";
-        } else {
-            delete errorsCopy.statement;
-        }
-        setErrors(errorsCopy);
-    }
-
-    const handleDifficulty = (e) => {
-        const newDifficulty = e.target.value;
-        setDifficulty(newDifficulty);
-    }
-
-    const handleSampleInput = (e) => {
-        const newSampleInput = e.target.value;
-        setSampleInput(newSampleInput);
-        validateSampleInput(newSampleInput);
-    }
-
-    const validateSampleInput = (value) => {
-        const errorsCopy = { ...errors };
-        if (value.length > 1000) {
-            errorsCopy.sampleInput = "You have reached your maximum limit of characters allowed";
-        } else {
-            delete errorsCopy.sampleInput;
-        }
-        setErrors(errorsCopy);
-    }
-
-    const handleSampleOutput = (e) => {
-        const newSampleOutput = e.target.value;
-        setSampleOutput(newSampleOutput);
-        validateSampleOutput(newSampleOutput);
-    }
-
-    const validateSampleOutput = (value) => {
-        const errorsCopy = { ...errors };
-        if (value.length > 1000) {
-            errorsCopy.sampleOutput = "You have reached your maximum limit of characters allowed";
-        } else {
-            delete errorsCopy.sampleOutput;
-        }
-        setErrors(errorsCopy);
-    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         // console.log(e);
 
-        if (Object.keys(errors).length === 0) {
+        if (Object.values(problemState.errors).every((error) => error === '')) {
             try {
-                const token = sessionStorage.getItem('jwtToken');
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
                 const result = await axios.post(`${BACK_SERVER_URL}/problems/add`, {
-                    title, statement, difficulty, sampleInput, sampleOutput
+                    title: problemState.title,
+                    statement: problemState.statement,
+                    difficulty: problemState.difficulty,
+                    testCases: problemState.testCases
                 }, { headers });
                 if (result.status === 201) {
                     setMessage("Problem exists already!!");
@@ -106,11 +73,13 @@ const AddProblem = () => {
                     // console.log("Problem created successfully");
                 }
                 setShow(true);
-                setTitle('');
-                setStatement('');
-                setDifficulty('');
-                setSampleInput('');
-                setSampleOutput('');
+                setProblemState({
+                    title: '',
+                    statement: '',
+                    difficulty: '',
+                    testCases: [],
+                    errors: {}
+                })
             } catch (error) {
                 console.log(error);
             }
@@ -121,48 +90,38 @@ const AddProblem = () => {
         <div className='mt-2 d-flex flex-wrap justify-content-center '>
             <Card className="p-3 w-100">
                 <Form onSubmit={handleSubmit} >
-                    <InputGroup className="mb-3" >
+                    <InputGroup className='mb-3' >
                         <InputGroup.Text>Problem Title</InputGroup.Text>
-                        <Form.Control type="text" required value={title} isInvalid={!!errors.title}
-                            onChange={handleTitle} />
-                        {errors.title &&
-                            <Form.Control.Feedback type="invalid">
-                                {errors.title}
+                        <Form.Control type='text' required name='title' value={problemState.title}
+                            isInvalid={!!problemState.errors && !!problemState.errors.title}
+                            onChange={handleInputChange} />
+                        {problemState.errors && problemState.errors.title &&
+                            <Form.Control.Feedback type='invalid'>
+                                {problemState.errors.title}
                             </Form.Control.Feedback>
                         }
                     </InputGroup>
-                    <InputGroup className="mb-3">
+                    <InputGroup className='mb-3'>
                         <InputGroup.Text>Problem Statement</InputGroup.Text>
-                        <Form.Control as="textarea" aria-label="With textarea" rows={5} required
-                            value={statement} isInvalid={!!errors.statement}
-                            onChange={handleStatement}
+                        <Form.Control as='textarea' name='statement' rows={8} required
+                            onChange={handleInputChange} value={problemState.statement}
+                            isInvalid={!!problemState.errors && !!problemState.errors.statement}
                         />
-                        {errors.statement &&
+                        {problemState.errors && problemState.errors.statement &&
                             <Form.Control.Feedback type='invalid'>
-                                {errors.statement}
+                                {problemState.errors.statement}
                             </Form.Control.Feedback>
                         }
                     </InputGroup >
-                    <InputGroup className="mb-3" >
+                    <InputGroup className='mb-3' >
                         <InputGroup.Text>Problem Difficulty</InputGroup.Text>
-                        <Form.Select required value={difficulty} onChange={handleDifficulty}>
+                        <Form.Select required name='difficulty' value={problemState.difficulty}
+                            onChange={handleInputChange}>
                             <option> </option>
-                            <option value="easy">easy</option>
-                            <option value="medium">medium</option>
-                            <option value="hard">hard</option>
+                            <option value='easy'>easy</option>
+                            <option value='medium'>medium</option>
+                            <option value='hard'>hard</option>
                         </Form.Select>
-                    </InputGroup>
-                    <InputGroup className="mb-3">
-                        <InputGroup.Text>Sample Input</InputGroup.Text>
-                        <Form.Control as="textarea" aria-label="With textarea" rows={4} required
-                            value={sampleInput} isInvalid={!!errors.sampleInput}
-                            onChange={handleSampleInput} />
-                    </InputGroup>
-                    <InputGroup className="mb-3">
-                        <InputGroup.Text>Sample output</InputGroup.Text>
-                        <Form.Control as="textarea" aria-label="With textarea" rows={3} required
-                            value={sampleOutput} isInvalid={!!errors.sampleOutput}
-                            onChange={handleSampleOutput} />
                     </InputGroup>
                     <Button className="w-100" variant="outline-dark" type='submit'>Submit</Button>
                 </Form>
