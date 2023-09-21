@@ -8,7 +8,7 @@ import ResetPassword from "./components/auth/ResetPassword";
 import AddProblem from "./components/problems/AddProblem";
 import ProblemList from "./components/problems/ProblemList";
 import { AuthProvider } from "./context/AuthContext";
-import PrivateRoute from "./components/privateRoutes/PrivateRoutes";
+import PrivateRoute from "./privateRoutes/PrivateRoutes";
 import ProblemDetails from "./components/problems/ProblemDetails";
 import DisableGoBackButton from "./components/auth/DisableGoBackButton";
 import ProblemEdit from "./components/problems/ProblemEdit";
