@@ -3,6 +3,7 @@ import { Card, Form, Button, InputGroup, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useProblemState } from './ProblemState';
 import { BACK_SERVER_URL } from '../../config/config';
+import { createProblem } from '../../services/api';
 import { useAuth } from "../../context/AuthContext";
 
 const AddProblem = () => {
@@ -17,15 +18,15 @@ const AddProblem = () => {
 
         if (Object.values(problemState.errors).every((error) => error === '')) {
             try {
-                const headers = {
-                    Authorization: `Bearer ${token}`,
-                };
-                const result = await axios.post(`${BACK_SERVER_URL}/problems/add`, {
-                    title: problemState.title,
-                    statement: problemState.statement,
-                    difficulty: problemState.difficulty,
-                    testCases: problemState.testCases
-                }, { headers });
+
+                const result = await createProblem(
+                    {
+                        title: problemState.title,
+                        statement: problemState.statement,
+                        difficulty: problemState.difficulty,
+                        testCases: problemState.testCases
+                    }, token);
+
                 setProblemState({
                     title: '',
                     statement: '',
@@ -45,7 +46,7 @@ const AddProblem = () => {
             }
         }
     }
-    
+
     const handleInputFocus = () => {
         setMessage('');
     };
