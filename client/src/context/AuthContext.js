@@ -13,17 +13,19 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.getItem("tokenExpiration")
   );
   const [token, setToken] = useState(sessionStorage.getItem("jwtToken"));
+  const [userId, setUserId] = useState("");
 
   const navigate = useNavigate();
 
-  const login = (authToken) => {
+  const login = (authToken, userId) => {
     sessionStorage.setItem("jwtToken", authToken);
+    sessionStorage.setItem("userId", userId);
     setToken(authToken);
+    setUserId(userId);
 
     const decoded = jwtDecode(authToken);
     const expirationTimestamp = decoded.exp;
     const expirationDate = new Date(expirationTimestamp * 1000);
-
     sessionStorage.setItem("tokenExpiration", expirationDate.toString());
     setTokenExpiration(expirationDate.toString());
   };
@@ -31,9 +33,11 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     sessionStorage.removeItem("jwtToken");
     sessionStorage.removeItem("tokenExpiration");
+    sessionStorage.removeItem("userId");
 
     setToken("");
     setTokenExpiration("");
+    setUserId("");
 
     navigate("/user/signIn");
   };
@@ -41,7 +45,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkTokenExpiration = () => {
       const storedToken = sessionStorage.getItem("jwtToken");
+      const storedUserId = sessionStorage.getItem("userId");
       setToken(storedToken);
+      setUserId(storedUserId);
 
       if (token && tokenExpiration) {
         const currentTime = new Date().getTime();
@@ -51,16 +57,19 @@ export const AuthProvider = ({ children }) => {
           console.log("From auth context: token expired");
           logout();
         }
-        // console.log(token);
       }
     };
+
+    checkTokenExpiration();
+
     const intervalId = setInterval(checkTokenExpiration, 10000);
     return () => clearInterval(intervalId);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, tokenExpiration]);
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ token, userId, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
