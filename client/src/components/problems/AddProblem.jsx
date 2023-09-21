@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Card, Form, Button, InputGroup, Alert } from 'react-bootstrap'; 
-import { useProblemState } from './ProblemState'; 
+import { Card, Form, Button, Alert } from 'react-bootstrap';
+import ProblemForm from './ProblemForm';
+import { useProblemState } from './ProblemState';
 import { createProblem } from '../../services/api';
 import { useAuth } from "../../context/AuthContext";
 
@@ -38,6 +39,7 @@ const AddProblem = () => {
                 } else {
                     setMessage("Problem created successfully!!");
                     // console.log("Problem created successfully");
+                    console.log(result.data);
                 }
             } catch (error) {
                 console.log(error);
@@ -58,39 +60,8 @@ const AddProblem = () => {
                     </Alert>
                 )}
                 <Form onSubmit={handleSubmit} >
-                    <InputGroup className='mb-3' >
-                        <InputGroup.Text>Problem Title</InputGroup.Text>
-                        <Form.Control type='text' required name='title' value={problemState.title}
-                            isInvalid={!!problemState.errors && !!problemState.errors.title}
-                            onChange={handleInputChange} onFocus={handleInputFocus} />
-                        {problemState.errors && problemState.errors.title &&
-                            <Form.Control.Feedback type='invalid'>
-                                {problemState.errors.title}
-                            </Form.Control.Feedback>
-                        }
-                    </InputGroup>
-                    <InputGroup className='mb-3'>
-                        <InputGroup.Text>Problem Statement</InputGroup.Text>
-                        <Form.Control as='textarea' name='statement' rows={8} required
-                            onChange={handleInputChange} value={problemState.statement}
-                            isInvalid={!!problemState.errors && !!problemState.errors.statement}
-                        />
-                        {problemState.errors && problemState.errors.statement &&
-                            <Form.Control.Feedback type='invalid'>
-                                {problemState.errors.statement}
-                            </Form.Control.Feedback>
-                        }
-                    </InputGroup >
-                    <InputGroup className='mb-3' >
-                        <InputGroup.Text>Problem Difficulty</InputGroup.Text>
-                        <Form.Select required name='difficulty' value={problemState.difficulty}
-                            onChange={handleInputChange}>
-                            <option> </option>
-                            <option value='easy'>easy</option>
-                            <option value='medium'>medium</option>
-                            <option value='hard'>hard</option>
-                        </Form.Select>
-                    </InputGroup>
+                    <ProblemForm problemState={problemState} handleInputChange={handleInputChange}
+                        handleInputFocus={handleInputFocus} />
                     <Button className="w-100" variant="outline-dark" type='submit'>Submit</Button>
                 </Form>
             </Card>
