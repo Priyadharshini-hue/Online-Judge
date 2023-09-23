@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Container, Table, Button, Dropdown, Pagination, Badge, Spinner, Modal } from "react-bootstrap";
-import axios from "axios";
-import { BACK_SERVER_URL } from "../../config/config";
-import { Link, useNavigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
+import React, { useEffect, useState } from 'react';
+import { Container, Button, Spinner, Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import PaginationComponent from './PaginationComponent';
+import ProblemTable from './ProblemTable';
+import { fetchProblems, deleteProblem } from '../../services/api';
 
 const ProblemList = () => {
   const [data, setData] = useState([]);
@@ -12,23 +13,18 @@ const ProblemList = () => {
   const [problemsPerPage] = useState(7);
   const [message, setMessage] = useState('');
   const [fetchInterval] = useState(40000);
-
+  const { token, userId } = useAuth();
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const [problemToDelete, setProblemToDelete] = useState(null);
 
-  const token = sessionStorage.getItem('jwtToken');
+  const handleClose = () => setShow(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
-
       try {
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-        const res = await axios.get(`${BACK_SERVER_URL}/problems/list`, { headers });
-        // console.log(res.data);
-        setData(res.data.data);
+        const problems = await fetchProblems(token);
+        setData(problems);
       } catch (error) {
         console.log(error);
       }
@@ -43,6 +39,7 @@ const ProblemList = () => {
     return () => {
       clearInterval(intervalId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchInterval, token]);
 
   const indexOfLastProblem = currentPage * problemsPerPage;
@@ -53,155 +50,92 @@ const ProblemList = () => {
     setCurrentPage(pageNumber);
   };
 
-  const decoded = jwtDecode(token);
-  const userId = decoded._id;
   const navigate = useNavigate();
 
   const handleDelete = async (problem) => {
     console.log('Delete button clicked');
-    // console.log(userId === problem.createdBy);
-    // console.log(userId);
+    console.log(userId);
+
     if (userId !== problem.createdBy) {
-      setMessage("Unauthorized action. Only the problem owner can delete this.");
+      setMessage('Unauthorized action. Only the problem owner can delete this.');
       setShow(true);
     } else {
-      try {
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-        const result = await axios.delete(`${BACK_SERVER_URL}/problems/${problem._id}`,
-          { headers });
+      setProblemToDelete(problem);
+      setMessage('Are you sure to delete the problem?');
+      setShow(true);
+    }
+  };
 
-        if (result.status === 200) {
-          setData((prevData) => prevData.filter((item) => item._id !== problem._id));
-          console.log("Problem deleted!!");
-        }
-      } catch (error) {
-        console.log(error);
+  const handleConfirmDelete = async (problem) => {
+    try {
+      const isDeleted = deleteProblem(token, problem._id);
+
+      if (isDeleted) {
+        setData((prevData) => prevData.filter((item) => item._id !== problem._id));
+        handleClose();
+        setProblemToDelete(null);
+        console.log('Problem deleted!!');
       }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const handleEdit = (problem) => {
-    console.log("Edit button is clicked");
-    // console.log(userId === problem.createdBy);
-    // console.log(userId);
+    console.log('Edit button is clicked');
+    console.log(userId);
+
     if (userId !== problem.createdBy) {
-      setMessage("Unauthorized action. Only the problem owner can edit this.");
+      setMessage('Unauthorized action. Only the problem owner can edit this.');
       setShow(true);
     } else {
       navigate(`/problems/edit/${problem._id}`);
     }
   };
 
-  const maxPagesInRow = 10;
-  const totalPages = Math.ceil(data.length / problemsPerPage);
-
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(
-        <Pagination.Item
-          key={i}
-          active={i === currentPage}
-          onClick={() => paginate(i)}
-        >
-          {i}
-        </Pagination.Item>
-      );
-    }
-    return pageNumbers;
-  };
-
-  const renderPagination = () => {
-    if (totalPages <= maxPagesInRow) {
-      return renderPageNumbers();
-    } else {
-      // console.log(Math.max(currentPage - Math.floor(maxPagesInRow / 2) - 1, 0));
-      // console.log (Math.min(currentPage + Math.floor(maxPagesInRow / 2), totalPages)); 
-      const pagesToDisplay = renderPageNumbers().slice(
-        Math.max(currentPage - Math.floor(maxPagesInRow / 2) - 1, 0),
-        Math.min(currentPage + Math.floor(maxPagesInRow / 2), totalPages)
-      );
-
-      const firstPage = (
-        <>
-          <Pagination.First onClick={() => paginate(1)} disabled={currentPage === 1} />
-          <Pagination.Prev onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} />
-        </>
-      );
-
-      const lastPage = (
-        <>
-          <Pagination.Next onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages} />
-          <Pagination.Last onClick={() => paginate(totalPages)} disabled={currentPage === totalPages} />
-        </>
-      );
-
-      return (
-        <>
-          {firstPage}
-          {pagesToDisplay}
-          {lastPage}
-        </>
-      );
-    }
-  };
-
-
   return (
-    <Container className="">
+    <Container className=''>
       {loading ? (
-        <div className="d-flex justify-content-center">
-          <Spinner animation="border" variant="dark" />
+        <div className='d-flex justify-content-center'>
+          <Spinner animation='border' variant='dark' />
         </div>
       ) : (
-        <div className="mt-1">
+        <div className='mt-1'>
           <div>
-            <Table bordered hover>
-              <thead>
-                <tr>
-                  <th> Problem Title</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentProblems.map((problem) => (
-                  <tr key={problem._id}>
-                    <td className="d-flex justify-content-between align-items-center"  >
-                      <Link to={`/problems/${problem._id}`}>{problem.title}</Link>
-                      <Badge pill bg="dark">{problem.difficulty}</Badge>
-                      <Dropdown>
-                        <Dropdown.Toggle className="p-1" variant='outline-dark' >
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          <Dropdown.Item onClick={() => handleEdit(problem)}>Edit</Dropdown.Item>
-                          <Dropdown.Item onClick={() => handleDelete(problem)}>Delete</Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            <ProblemTable
+              problems={currentProblems}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
           </div>
-          <div className="d-flex justify-content-center">
-            <Pagination>
-              {renderPagination()}
-            </Pagination>
+          <div className='d-flex justify-content-center'>
+            <PaginationComponent totalPages={Math.ceil(data.length / problemsPerPage)}
+              maxPagesInRow={10} currentPage={currentPage} paginate={paginate} />
           </div>
-          <div className="d-flex justify-content-center">
-            <Button variant="outline-dark" href="/problems/add">Add Problem</Button>
+          <div className='d-flex justify-content-center'>
+            <Button variant='outline-dark' href='/problems/add'>Add Problem</Button>
           </div>
         </div>
       )}
-      <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton />
-        <Modal.Body className='d-flex '>
+      <Modal show={show} onHide={handleClose} centered backdrop="static" keyboard={false}>
+        <Modal.Header closeButton >
+          <Modal.Title>Confirm to delete the problem....</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className='d-flex'>
           <p>{message}</p>
         </Modal.Body>
+        {problemToDelete && (
+          <Modal.Footer>
+            <Button variant='danger' onClick={() => handleConfirmDelete(problemToDelete)}>
+              Confirm Delete
+            </Button>
+            <Button variant='secondary' onClick={handleClose}>
+              Cancel
+            </Button>
+          </Modal.Footer>
+        )}
       </Modal>
     </Container>
-
   );
 };
 
