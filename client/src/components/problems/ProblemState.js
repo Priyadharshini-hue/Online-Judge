@@ -37,13 +37,28 @@ export function useProblemState() {
             return `You have reached your maximum limit of ${maxCharacters} characters allowed for ${fieldName}`;
         }
         return '';
-    }; 
+    };
 
+    const deleteTestCase = (index) => {
+        return () => {
+            console.log(`Delete test case ${index}`);
+            const updatedTestCases = [...problemState.testCases];
+            console.log(problemState.testCases);
+            updatedTestCases.splice(index, 1);
+            console.log(updatedTestCases);
+            setProblemState({
+                ...problemState,
+                testCases: updatedTestCases
+            });
+        }
+    }
+    
     return {
         problemState,
         setProblemState,
         handleInputChange,
         validateField,
-        generateErrorMessage
+        generateErrorMessage,
+        deleteTestCase
     };
 }
