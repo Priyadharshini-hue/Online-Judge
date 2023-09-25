@@ -3,7 +3,7 @@ const userModel = require("../model/userModel");
 const jwt = require("jsonwebtoken");
 
 const createToken = (_id) => {
-  return jwt.sign({ _id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign({ _id }, process.env.JWT_SECRET, { expiresIn: "20m" });
 };
 
 const getUser = async (req, res) => {
@@ -14,19 +14,17 @@ const getUser = async (req, res) => {
     if (!user) {
       res.status(202).json("user not found");
     } else {
-      const passwordMatch = bcrypt.compare(password, user.password);
+      const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (passwordMatch) {
         const token = createToken(user._id);
-        // console.log(token);
-        res.status(200).json({ msg: "Present user", token });
+        res.status(200).json({ msg: "Present user", token, userId: user._id });
       } else {
         res.status(201).json("Wrong password");
       }
     }
   } catch (error) {
-    // console.log(error);
-    res.json(error);
+    res.status(500).json(error);
   }
 };
 
