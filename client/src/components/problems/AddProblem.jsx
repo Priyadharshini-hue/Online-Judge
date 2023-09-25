@@ -10,9 +10,9 @@ import { useAuth } from "../../context/AuthContext";
 
 const AddProblem = () => {
 
-    const { problemState, setProblemState, handleInputChange, deleteTestCase } = useProblemState();
+    const { problemState, setProblemState, handleInputChange, deleteTestCase, problemCleanData } = useProblemState();
     const { validateTestCase, setTestCaseModalState, testCaseModalState, handleShowTestCaseModal,
-        handleTestCaseInputChange, handleCloseTestCaseModal } = useTestCaseState();
+        handleTestCaseInputChange, handleCloseTestCaseModal, cleanData } = useTestCaseState();
     const [message, setMessage] = useState('');
     const { token } = useAuth();
 
@@ -33,6 +33,8 @@ const AddProblem = () => {
 
         if (Object.values(problemState.errors).every((error) => error === '')) {
             try {
+                problemState.title = problemCleanData(problemState.title);
+                problemState.statement = problemCleanData(problemState.statement);
                 const result = await createProblem(
                     {
                         title: problemState.title,
@@ -67,6 +69,7 @@ const AddProblem = () => {
             if (problemState.errors.testCase) {
                 delete problemState.errors.testCase;
             }
+            testCaseModalState.data = cleanData(testCaseModalState.data);
             setProblemState({
                 ...problemState,
                 testCases: [...problemState.testCases, testCaseModalState.data]

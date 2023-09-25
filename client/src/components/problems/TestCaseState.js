@@ -41,12 +41,25 @@ export function useTestCaseState() {
     return errors;
   };
 
+  const cleanData = (data) => {
+    const cleanedInput = data.input
+      .replace(/ +(?=\.|\n|$)/g, "")
+      .replace(/\n\s*/g, "\n")
+      .trim();
+    const cleanedOutput = data.output
+      .replace(/ +(?=\.|\n|$)/g, "")
+      .replace(/\n\s*/g, "\n")
+      .trim();
+    return { input: cleanedInput, output: cleanedOutput };
+  };
+
   return {
     validateTestCase,
     setTestCaseModalState,
     testCaseModalState,
     handleShowTestCaseModal,
     handleCloseTestCaseModal,
-    handleTestCaseInputChange
+    handleTestCaseInputChange,
+    cleanData,
   };
 }
