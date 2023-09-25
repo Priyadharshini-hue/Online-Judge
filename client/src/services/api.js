@@ -1,6 +1,18 @@
 import axios from "axios";
 import { BACK_SERVER_URL } from "../config/config";
 
+export const forgotPassword = async (email) => {
+  try {
+    const response = await axios.post(
+      `${BACK_SERVER_URL}/user/forgotPassword`,
+      { email }
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const createProblem = async (problemData, token) => {
   try {
     const headers = {
@@ -91,7 +103,7 @@ export const deleteProblem = async (token, problemId) => {
       Authorization: `Bearer ${token}`,
     };
     const response = await axios.delete(
-      `${BACK_SERVER_URL}/problems/${problemId}`,
+      `${BACK_SERVER_URL}/problems/delete/${problemId}`,
       {
         headers,
       }
