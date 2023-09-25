@@ -1,5 +1,6 @@
 const problemModel = require("../model/problemModel");
 
+// create problem
 const addProblem = async (req, res) => {
   const { title, statement, difficulty, testCases } = req.body;
   const createdBy = req.user._id;
@@ -8,7 +9,7 @@ const addProblem = async (req, res) => {
     const problem = await problemModel.findOne({ title });
 
     if (problem) {
-      res.status(201).json({ message: "Problem ", problem });
+      res.status(201).json({ message: "Problem exists already", problem });
     } else {
       const problem = await problemModel.create({
         title,
@@ -19,8 +20,8 @@ const addProblem = async (req, res) => {
       });
       res.json({ message: "Problem created successfully", data: problem });
     }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -63,7 +64,8 @@ const updateProblem = async (req, res) => {
   }
 };
 
-const deleteProblem = async (req, res) => {
+// delete problem
+const deleteProblem = async (req, res) => { 
   const problem = await problemModel.findByIdAndDelete(req.params.problemId);
   try {
     if (!problem) {
