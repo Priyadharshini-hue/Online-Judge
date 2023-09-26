@@ -13,6 +13,18 @@ export const forgotPassword = async (email) => {
   }
 };
 
+export const resetPassword = async (password, token) => {
+  try {
+    const response = await axios.put(`${BACK_SERVER_URL}/user/resetPassword`, {
+      password,
+      token,
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const createProblem = async (problemData, token) => {
   try {
     const headers = {
