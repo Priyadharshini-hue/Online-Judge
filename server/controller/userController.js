@@ -12,15 +12,17 @@ const getUser = async (req, res) => {
     const user = await userModel.findOne({ email: email });
 
     if (!user) {
-      res.status(202).json("user not found");
+      res.status(202).json({ message: "User not found" });
     } else {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (passwordMatch) {
         const token = createToken(user._id);
-        res.status(200).json({ msg: "Present user", token, userId: user._id });
+        res
+          .status(200)
+          .json({ message: "Signing in...", token, userId: user._id });
       } else {
-        res.status(201).json("Wrong password");
+        res.status(201).json({ message: "Wrong password" });
       }
     }
   } catch (error) {
@@ -33,13 +35,12 @@ const createUser = async (req, res) => {
 
   try {
     const existingNameUser = await userModel.findOne({ name });
-
     const existingEmailUser = await userModel.findOne({ email });
 
     if (existingNameUser) {
-      res.status(201).json("Username already exists");
+      res.json({ message: "Username already exists" });
     } else if (existingEmailUser) {
-      res.status(201).json("Email already exists");
+      res.json({ message: "Email id already exists" });
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -49,7 +50,7 @@ const createUser = async (req, res) => {
         password: hashedPassword,
       });
 
-      res.status(200).json("New user");
+      res.json({ message: "Account created successfully" });
     }
   } catch (err) {
     res.status(500).json(err);

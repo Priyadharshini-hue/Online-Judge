@@ -1,6 +1,5 @@
 const problemModel = require("../model/problemModel");
 
-// create problem
 const addProblem = async (req, res) => {
   const { title, statement, difficulty, testCases } = req.body;
   const createdBy = req.user._id;
@@ -9,7 +8,7 @@ const addProblem = async (req, res) => {
     const problem = await problemModel.findOne({ title });
 
     if (problem) {
-      res.status(201).json({ message: "Problem exists already", problem });
+      res.json({ message: "Problem exists already" });
     } else {
       const problem = await problemModel.create({
         title,
@@ -18,23 +17,24 @@ const addProblem = async (req, res) => {
         testCases,
         createdBy,
       });
-      res.json({ message: "Problem created successfully", data: problem });
+      res.json({ message: "Problem created successfully" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-const getProblems = async (req, res) => {
+const fetchProblems = async (req, res) => {
   try {
     const problems = await problemModel.find();
-    res.status(200).json({ data: problems });
+    res.json({ data: problems });
   } catch (error) {
     res.status(500).json(error);
   }
 };
 
 const getProblem = async (req, res) => {
+  console.log(req.body);
   try {
     const problem = await problemModel.findById(req.params.problemId);
 
@@ -58,14 +58,14 @@ const updateProblem = async (req, res) => {
     if (!problem) {
       return res.status(404).json({ message: "Problem not found" });
     }
-    res.status(200).json({ message: "Problem edited successfully" });
+    res.json({ message: "Problem edited successfully" });
   } catch (error) {
     res.status(500).json(error);
   }
 };
 
 // delete problem
-const deleteProblem = async (req, res) => { 
+const deleteProblem = async (req, res) => {
   const problem = await problemModel.findByIdAndDelete(req.params.problemId);
   try {
     if (!problem) {
@@ -79,7 +79,7 @@ const deleteProblem = async (req, res) => {
 
 module.exports = {
   addProblem,
-  getProblems,
+  fetchProblems,
   getProblem,
   updateProblem,
   deleteProblem,
