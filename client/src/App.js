@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar";
 import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
+import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import AddProblem from "./components/problems/AddProblem";
 import ProblemList from "./components/problems/ProblemList";
@@ -12,6 +13,7 @@ import PrivateRoute from "./privateRoutes/PrivateRoutes";
 import ProblemDetails from "./components/problems/ProblemDetails";
 import DisableGoBackButton from "./components/auth/DisableGoBackButton";
 import ProblemEdit from "./components/problems/ProblemEdit";
+import ErrorPage from "./components/problems/ErrorPage";
 
 const App = () => {
   return (
@@ -19,10 +21,16 @@ const App = () => {
       <AuthProvider>
         <DisableGoBackButton />
         <NavigationBar />
+
         <Routes>
+          <Route path="/error" element={<ErrorPage />} />
           <Route path="/user/signIn" element={<SignIn />} />
           <Route path="/user/signUp" element={<SignUp />} />
-          <Route path="/resetPassword" element={<ResetPassword />} />
+          <Route path="/user/forgotPassword" element={<ForgotPassword />} />
+          <Route
+            path="/user/resetPassword/:token"
+            element={<ResetPassword />}
+          />
           <Route
             path="/problems/add"
             element={
