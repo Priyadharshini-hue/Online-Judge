@@ -70,7 +70,7 @@ const ProblemEdit = () => {
 
                 if (result.status === 200) {
                     console.log('Problem edited!!');
-                    setMessage('Problem edited successfully')
+                    setMessage(result.data.message);
                     setShow(true);
                     setTimeout(() => {
                         navigate('/problems/list');
