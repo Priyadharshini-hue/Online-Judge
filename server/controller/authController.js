@@ -68,4 +68,36 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-module.exports = { forgotPassword };
+const resetPassword = async (req, res) => {
+  const { password, token } = req.body;
+
+  try {
+    const { _id } = jwt.verify(token, process.env.JWT_SECRET);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const resetToken = await ResetToken.findOne({ userId: _id });
+
+    if (resetToken.used) {
+      return res
+        .status(202)
+        .json({ msg: "A reset link can be used only once..." });
+    }
+    resetToken.used = true;
+    await resetToken.save();
+
+    const user = await User.findByIdAndUpdate(
+      _id,
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    return res.status(200).json({ msg: "Password changed" });
+  } catch (error) {
+    return res.status(201).json({
+      msg: "Token has expired, please request a new password reset link.",
+    });
+  }
+};
+
+module.exports = { forgotPassword, resetPassword };
