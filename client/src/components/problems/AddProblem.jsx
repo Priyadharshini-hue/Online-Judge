@@ -50,11 +50,11 @@ const AddProblem = () => {
                     testCases: [],
                     errors: {}
                 })
-                if (result.status === 201) {
-                    setMessage(result.data.message);
-                } else {
-                    setMessage(result.data.message);
-                }
+
+                console.log(result);
+
+                setMessage(result.data.message);
+
             } catch (error) {
                 console.log(error);
             }
@@ -70,6 +70,7 @@ const AddProblem = () => {
                 delete problemState.errors.testCase;
             }
             testCaseModalState.data = cleanData(testCaseModalState.data);
+
             setProblemState({
                 ...problemState,
                 testCases: [...problemState.testCases, testCaseModalState.data]
@@ -101,9 +102,9 @@ const AddProblem = () => {
                         {message}
                     </Alert>
                 )}
-                <Form onSubmit={handleSubmit} >
+                <Form onSubmit={handleSubmit}  onFocus={handleInputFocus} >
                     <ProblemForm problemState={problemState} handleInputChange={handleInputChange}
-                        handleInputFocus={handleInputFocus} />
+                       />
                     <Button className='mb-3' variant='outline-dark' onClick={handleShowTestCaseModal}>
                         Add Test Case</Button>
                     {problemState.errors && problemState.errors.testCase && (
