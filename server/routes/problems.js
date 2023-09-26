@@ -2,7 +2,7 @@ const express = require("express");
 
 const {
   addProblem,
-  getProblems,
+  fetchProblems,
   getProblem,
   updateProblem,
   deleteProblem,
@@ -12,10 +12,10 @@ const auth = require("../middleware/authMiddleware");
 const router = express.Router();
 
 router.post("/problems/add", auth, addProblem);
-router.get("/problems/list", auth, getProblems);
+router.get("/problems/list", auth, fetchProblems);
 router.get("/problems/:problemId", auth, getProblem);
 router.get("/problems/edit/:problemId", auth, getProblem);
 router.put("/problems/edit/:problemId", auth, updateProblem);
-router.delete("/problems/:problemId", auth, deleteProblem);
+router.delete("/problems/delete/:problemId", auth, deleteProblem);
 
 module.exports = router;
