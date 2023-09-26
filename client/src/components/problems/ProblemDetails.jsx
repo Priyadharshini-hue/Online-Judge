@@ -24,6 +24,7 @@ const ProblemDetails = () => {
   }, [problemId, token]);
 
   const testCases = problem.testCases || [];
+  console.log(testCases);
 
   return (
     <div className="d-flex flex-row ">
@@ -35,11 +36,15 @@ const ProblemDetails = () => {
             <Card.Text  >{problem.statement}</Card.Text>
             {testCases.slice(0, 2).map((testCase, index) => (
               <div key={index}>
-                <Card.Text className="mt-3 mb-0">Test case {index + 1}</Card.Text>
+                <Card.Text className="mt-3 mb-0">Test case </Card.Text>
                 <Card.Text className="m-0">Input</Card.Text>
-                <Card.Text className="m-0 bg-dark text-white">{testCase.input}</Card.Text>
+                <Card.Text className="m-0 bg-dark text-white">
+                  <pre style={{ whiteSpace: 'pre-wrap' }}>{testCase.input}</pre>
+                </Card.Text>
                 <Card.Text className="m-0">Output</Card.Text>
-                <Card.Text className="bg-dark text-white">{testCase.output}</Card.Text>
+                <Card.Text className="bg-dark text-white">
+                  <pre style={{ whiteSpace: 'pre-wrap' }}>{testCase.output}</pre>
+                </Card.Text>
               </div>
             ))}
           </Card.Body>
