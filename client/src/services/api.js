@@ -1,6 +1,30 @@
 import axios from "axios";
 import { BACK_SERVER_URL } from "../config/config";
 
+export const createUser = async (userData) => {
+  try {
+    const response = await axios.post(
+      `${BACK_SERVER_URL}/user/signUp`,
+      userData
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getUser = async (userData) => {
+  try {
+    const response = await axios.post(
+      `${BACK_SERVER_URL}/user/signIn`,
+      userData
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const forgotPassword = async (email) => {
   try {
     const response = await axios.post(
