@@ -3,8 +3,8 @@ import { useState } from "react";
 export function useTestCaseState() {
   const [testCaseModalState, setTestCaseModalState] = useState({
     show: false,
-    data: { input: "", output: "" },
-    errors: { input: "", output: "" },
+    data: { input: "", output: "", timeTaken: "" },
+    errors: { input: "", output: "", timeTaken: "" },
   });
 
   const handleShowTestCaseModal = () => {
@@ -38,19 +38,16 @@ export function useTestCaseState() {
     if (!testCaseModalState.data.output.trim()) {
       errors.output = "Output is required";
     }
-    return errors;
-  };
+    if (!testCaseModalState.data.timeTaken.trim()) {
+      errors.timeTaken = "Time taken is required";
+    }
+    const milliseconds = parseInt(testCaseModalState.data.timeTaken, 10);
 
-  const cleanData = (data) => {
-    const cleanedInput = data.input
-      .replace(/ +(?=\.|\n|$)/g, "")
-      .replace(/\n\s*/g, "\n")
-      .trim();
-    const cleanedOutput = data.output
-      .replace(/ +(?=\.|\n|$)/g, "")
-      .replace(/\n\s*/g, "\n")
-      .trim();
-    return { input: cleanedInput, output: cleanedOutput };
+    if (isNaN(milliseconds) || milliseconds <= 0) {
+      errors.timeTaken =
+        "Time taken must be a positive number in milliseconds.";
+    }
+    return errors;
   };
 
   return {
@@ -60,6 +57,5 @@ export function useTestCaseState() {
     handleShowTestCaseModal,
     handleCloseTestCaseModal,
     handleTestCaseInputChange,
-    cleanData,
   };
 }

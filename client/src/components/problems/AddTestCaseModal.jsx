@@ -26,6 +26,14 @@ const AddTestCaseModal = ({ show, handleClose, handleSubmit, testCaseData, handl
                                 {testCaseError.output}
                             </Form.Control.Feedback>
                         </Form.Group>
+                        <Form.Group controlId="timeTaken" className='mt-2'>
+                            <Form.Label>Time taken</Form.Label>
+                            <Form.Control as="textarea" name="timeTaken" value={testCaseData.timeTaken} rows={1} onChange={handleInputChange}
+                                placeholder='Time taken for this test case milliseconds' isInvalid={!!testCaseError.timeTaken} />
+                            <Form.Control.Feedback type="invalid">
+                                {testCaseError.timeTaken}
+                            </Form.Control.Feedback>
+                        </Form.Group>
                         <div className="text-center w-100">
                             <Button type="submit" className="mt-2">Submit</Button>
                         </div>

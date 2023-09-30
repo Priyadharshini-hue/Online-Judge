@@ -16,6 +16,10 @@ const ViewTestCaseModal = ({ isVisible, testCase, onClose }) => {
                     <label>Output:</label>
                     <textarea readOnly className="form-control" value={testCase.output} rows="4" />
                 </div>
+                <div className="mt-3">
+                    <label>Time taken for the test case</label>
+                    <textarea readOnly className="form-control" value={testCase.timeTaken} rows="1" />
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onClose}>
