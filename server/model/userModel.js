@@ -14,6 +14,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    score: {
+      type: Number,
+      required: true,
+    },
+    solvedProblems: {
+      type: [String],
+      required: true,
+    },
   },
   { timestamps: true }
 );

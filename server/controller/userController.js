@@ -48,6 +48,8 @@ const createUser = async (req, res) => {
         name,
         email,
         password: hashedPassword,
+        score: 0,
+        solvedProblems: [],
       });
 
       res.json({ message: "Account created successfully" });
