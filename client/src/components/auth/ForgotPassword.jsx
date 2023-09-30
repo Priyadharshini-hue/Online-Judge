@@ -16,16 +16,18 @@ const ForgotPassword = () => {
             try {
                 setMessage('loading....');
                 const result = await forgotPassword(forgotPasswordFormState.email);
+
                 if (result.status === 200) {
-                    setMessage(result.data.message);
+                    setMessage(result.message);
                 } else {
-                    setMessage(result.data.message);
-                    console.log(result.data.message);
+                    setMessage(result.message);
                 }
+
                 SetForgotPasswordFormState({
                     email: '',
                     errorMessage: '',
                 });
+
             } catch (error) {
                 console.log(error);
             }
@@ -58,7 +60,7 @@ const ForgotPassword = () => {
                         <span>Please check your email, for password reset link to reset password.</span>  &nbsp;
                         To  &nbsp;
                         <a className='fw-bold text-dark text-decoration-none' href='/user/signIn'>Sign in /</a> &nbsp;
-                        <a className='fw-bold text-dark text-decoration-none' href='/user/signUp'>Sign up</a> .
+                        <a className='fw-bold text-dark text-decoration-none' href='/user/signUp'>Sign up</a>
                     </Form.Text>
                 </Form>
             </Card>

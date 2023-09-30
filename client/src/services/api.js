@@ -31,7 +31,7 @@ export const forgotPassword = async (email) => {
       `${BACK_SERVER_URL}/user/forgotPassword`,
       { email }
     );
-    return response;
+    return response.data;
   } catch (error) {
     return error;
   }
