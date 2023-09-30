@@ -9,7 +9,6 @@ const ResetPassword = () => {
 
     const { token } = useParams();
     const [message, setMessage] = useState('');
-    const [variant, setVariant] = useState('');
     const { resetPasswordFormState, setResetPasswordFormState, handleInputChange } = useResetPasswordFormState();
 
     const handleSubmit = async (e) => {
@@ -30,13 +29,10 @@ const ResetPassword = () => {
                 });
                 if (result.status === 200) {
                     setMessage(result.data.msg);
-                    setVariant('info');
                 } else if (result.status === 202) {
                     setMessage(result.data.msg);
-                    setVariant('info');
                 } else if (result.status === 201) {
                     setMessage(result.data.msg);
-                    setVariant('danger');
                 }
                 console.log(result);
             } catch (error) {
@@ -50,7 +46,7 @@ const ResetPassword = () => {
             <Card className='p-3 w-25'>
                 <Image src={image} rounded style={{ display: 'block', margin: '0 auto', width: 80, height: 80, borderRadius: '50%', padding: '10px' }} />
                 {message && (
-                    <Alert className='text-center' variant={variant}>
+                    <Alert className='text-center' variant="info">
                         {message}
                     </Alert>
                 )}
