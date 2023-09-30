@@ -38,13 +38,13 @@ const ProblemDetails = () => {
               <div key={index}>
                 <Card.Text className="mt-3 mb-0">Test case </Card.Text>
                 <Card.Text className="m-0">Input</Card.Text>
-                <Card.Text className="m-0 bg-dark text-white">
-                  <pre style={{ whiteSpace: 'pre-wrap' }}>{testCase.input}</pre>
-                </Card.Text>
+                <div className="m-0 bg-dark text-white">
+                  <pre style={{ whiteSpace: 'pre-wrap', marginLeft: '4px' }}>{testCase.input}</pre>
+                </div>
                 <Card.Text className="m-0">Output</Card.Text>
-                <Card.Text className="bg-dark text-white">
-                  <pre style={{ whiteSpace: 'pre-wrap' }}>{testCase.output}</pre>
-                </Card.Text>
+                <div className="bg-dark text-white">
+                  <pre style={{ whiteSpace: 'pre-wrap', marginLeft: '4px' }}>{testCase.output}</pre>
+                </div>
               </div>
             ))}
           </Card.Body>
