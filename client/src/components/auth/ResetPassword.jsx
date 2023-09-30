@@ -67,7 +67,7 @@ const ResetPassword = () => {
                         }
                     </Form.Group>
                     <Form.Group className='mb-3' controlId='formGroupConfirmPassword'>
-                        <Form.Label>Password</Form.Label>
+                        <Form.Label>Confirm Password</Form.Label>
                         <Form.Control required type='password' placeholder='Confirm Password' name='confirmPassword'
                             value={resetPasswordFormState.confirmPassword} onChange={handleInputChange}
                             isInvalid={!!resetPasswordFormState.errorMessage.confirmPassword} />
