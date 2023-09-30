@@ -12,13 +12,13 @@ const AddProblem = () => {
 
     const { problemState, setProblemState, handleInputChange, deleteTestCase, problemCleanData } = useProblemState();
     const { validateTestCase, setTestCaseModalState, testCaseModalState, handleShowTestCaseModal,
-        handleTestCaseInputChange, handleCloseTestCaseModal, cleanData } = useTestCaseState();
+        handleTestCaseInputChange, handleCloseTestCaseModal } = useTestCaseState();
     const [message, setMessage] = useState('');
     const { token } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(problemState.testCases);
+        console.log(problemState);
 
         if (problemState.testCases.length === 0) {
             setProblemState({
@@ -61,6 +61,12 @@ const AddProblem = () => {
         }
     }
 
+    const cleanData = (data) => {
+        return data.replace(/ +(?=\.|\n|$)/g, "")
+            .replace(/\n\s*/g, "\n")
+            .trim();
+    }
+
     const handleSubmitTestCaseModal = (e) => {
         e.preventDefault();
         const testCaseErrors = validateTestCase();
@@ -69,17 +75,21 @@ const AddProblem = () => {
             if (problemState.errors.testCase) {
                 delete problemState.errors.testCase;
             }
-            testCaseModalState.data = cleanData(testCaseModalState.data);
+
+            testCaseModalState.data = {
+                input: cleanData(testCaseModalState.data.input),
+                output: cleanData(testCaseModalState.data.output),
+                timeTaken: cleanData(testCaseModalState.data.timeTaken)
+            }
 
             setProblemState({
                 ...problemState,
                 testCases: [...problemState.testCases, testCaseModalState.data]
             });
 
-            console.log(problemState);
             setTestCaseModalState({
                 show: false,
-                data: { input: '', output: '' },
+                data: { input: '', output: '', timeTaken: '' },
                 errors: {},
             });
         } else {
@@ -102,9 +112,8 @@ const AddProblem = () => {
                         {message}
                     </Alert>
                 )}
-                <Form onSubmit={handleSubmit}  onFocus={handleInputFocus} >
-                    <ProblemForm problemState={problemState} handleInputChange={handleInputChange}
-                       />
+                <Form onSubmit={handleSubmit} onFocus={handleInputFocus} >
+                    <ProblemForm problemState={problemState} handleInputChange={handleInputChange}/>
                     <Button className='mb-3' variant='outline-dark' onClick={handleShowTestCaseModal}>
                         Add Test Case</Button>
                     {problemState.errors && problemState.errors.testCase && (

@@ -10,6 +10,10 @@ const testCaseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    timeTaken: {
+      type: Number,
+      required: true,
+    },
   },
   { _id: false } // This option prevents MongoDB from generating separate IDs for test cases
 );
