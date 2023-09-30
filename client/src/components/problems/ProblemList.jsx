@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Button, Spinner, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import PaginationComponent from './PaginationComponent';
+import PaginationComponent from '../PaginationComponent';
 import ProblemTable from './ProblemTable';
 import { fetchProblems, deleteProblem } from '../../services/api';
 
@@ -20,7 +20,7 @@ const ProblemList = () => {
   const handleClose = () => setShow(false);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchProblem = async () => {
       setLoading(true);
       try {
         const problems = await fetchProblems(token);
@@ -30,10 +30,10 @@ const ProblemList = () => {
       }
       setLoading(false);
     };
-    fetchPosts();
+    fetchProblem();
 
     const intervalId = setInterval(() => {
-      fetchPosts();
+      fetchProblem();
     }, fetchInterval);
 
     return () => {
