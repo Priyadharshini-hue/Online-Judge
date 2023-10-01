@@ -185,3 +185,21 @@ export const fetchSubmissions = async (token) => {
     return error;
   }
 };
+
+export const fetchScores = async (token) => {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(
+      `${BACK_SERVER_URL}/submissions/leaderBoard`,
+      {
+        headers,
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};
