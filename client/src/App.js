@@ -14,6 +14,7 @@ import ProblemDetails from "./components/problems/ProblemDetails";
 import DisableGoBackButton from "./components/auth/DisableGoBackButton";
 import ProblemEdit from "./components/problems/ProblemEdit";
 import ErrorPage from "./components/problems/ErrorPage";
+import ProblemSubmissions from "./components/submissions/ProblemSubmissions";
 
 const App = () => {
   return (
@@ -60,6 +61,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <ProblemEdit />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/submissions/history"
+            element={
+              <PrivateRoute>
+                <ProblemSubmissions />
               </PrivateRoute>
             }
           />

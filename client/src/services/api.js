@@ -170,3 +170,18 @@ export const submitProblem = async (data, token) => {
     return error;
   }
 };
+
+export const fetchSubmissions = async (token) => {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.get(`${BACK_SERVER_URL}/submissions/history`, {
+      headers,
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};
