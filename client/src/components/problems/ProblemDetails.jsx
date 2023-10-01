@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import { Badge, Card } from 'react-bootstrap';
-import Compiler from "./Compiler";
+import CodeEditor from "./CodeEditor";
 import { useAuth } from "../../context/AuthContext";
 import { getProblem } from "../../services/api";
 
@@ -14,9 +14,13 @@ const ProblemDetails = () => {
     const fetchProblemDetails = async () => {
       try {
         const problemData = await getProblem(problemId, token);
+
         setProblem(problemData);
       } catch (error) {
         console.error("Error fetching problem details: ", error);
+        if (error) {
+          return <Navigate to="/error" />;
+        }
       }
     };
 
@@ -24,7 +28,6 @@ const ProblemDetails = () => {
   }, [problemId, token]);
 
   const testCases = problem.testCases || [];
-  console.log(testCases);
 
   return (
     <div className="d-flex flex-row ">
@@ -50,7 +53,7 @@ const ProblemDetails = () => {
           </Card.Body>
         </Card>
       </div>
-      <div className="rightSide flex-grow-1 w-50"><Compiler /></div>
+      <div className="rightSide flex-grow-1 w-50"><CodeEditor problemId={problemId} /></div>
     </div >
   );
 };
