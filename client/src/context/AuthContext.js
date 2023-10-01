@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import jwtDecode from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
+import { createContext, useContext, useState, useEffect } from "react";
+import jwtDecode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -10,51 +10,55 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [tokenExpiration, setTokenExpiration] = useState(
-    sessionStorage.getItem('tokenExpiration')
+    sessionStorage.getItem("tokenExpiration")
   );
-  const [token, setToken] = useState(sessionStorage.getItem('jwtToken'));
-  const [userId, setUserId] = useState('');
+  const [token, setToken] = useState(sessionStorage.getItem("jwtToken"));
+  const [userId, setUserId] = useState("");
 
   const navigate = useNavigate();
 
   const login = (authToken, userId) => {
-    sessionStorage.setItem('jwtToken', authToken);
-    sessionStorage.setItem('userId', userId);
-    setToken(authToken);
-    setUserId(userId);
+    try {
+      const decoded = jwtDecode(authToken);
+      const expirationTimestamp = decoded.exp;
+      const expirationDate = new Date(expirationTimestamp * 1000);
 
-    const decoded = jwtDecode(authToken);
-    const expirationTimestamp = decoded.exp;
-    const expirationDate = new Date(expirationTimestamp * 1000);
-    sessionStorage.setItem('tokenExpiration', expirationDate.toString());
-    setTokenExpiration(expirationDate.toString());
+      sessionStorage.setItem("jwtToken", authToken);
+      sessionStorage.setItem("userId", userId);
+      sessionStorage.setItem("tokenExpiration", expirationDate.toString());
+
+      setToken(authToken);
+      setUserId(userId);
+      setTokenExpiration(expirationDate.toString());
+    } catch (error) {
+      console.error("Error decoding JWT token:", error);
+    }
   };
 
   const logout = () => {
-    sessionStorage.removeItem('jwtToken');
-    sessionStorage.removeItem('tokenExpiration');
-    sessionStorage.removeItem('userId');
+    sessionStorage.removeItem("jwtToken");
+    sessionStorage.removeItem("tokenExpiration");
+    sessionStorage.removeItem("userId");
 
-    setToken('');
-    setTokenExpiration('');
-    setUserId('');
+    setToken("");
+    setTokenExpiration("");
+    setUserId("");
 
-    navigate('/user/signIn');
+    navigate("/user/signIn");
   };
 
   useEffect(() => {
     const checkTokenExpiration = () => {
-      const storedToken = sessionStorage.getItem('jwtToken');
-      const storedUserId = sessionStorage.getItem('userId');
+      const storedToken = sessionStorage.getItem("jwtToken");
+      const storedUserId = sessionStorage.getItem("userId");
       setToken(storedToken);
       setUserId(storedUserId);
-
       if (token && tokenExpiration) {
         const currentTime = new Date().getTime();
         const expirationTime = new Date(tokenExpiration).getTime();
 
         if (currentTime >= expirationTime) {
-          console.log('From auth context: token expired');
+          console.log("From auth context: token expired");
           logout();
         }
       }
