@@ -145,5 +145,28 @@ export const deleteProblem = async (token, problemId) => {
       }
     );
     return response.status === 200;
-  } catch (error) {}
+  } catch (error) {
+    return error;
+  }
+};
+
+export const submitProblem = async (data, token) => {
+  console.log(data);
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await axios.post(
+      `${BACK_SERVER_URL}/problem/submit`,
+      data,
+      {
+        headers,
+      }
+    );
+    // console.log('runProblem response:', response);
+    return response.data;
+  } catch (error) {
+    // console.error("Error in runProblem:", error);
+    return error;
+  }
 };
