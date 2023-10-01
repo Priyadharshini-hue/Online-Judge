@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
-const resetToken = (_id) => {
+const generateResetToken = (_id) => {
   return jwt.sign({ _id }, process.env.JWT_SECRET, {
     expiresIn: process.env.TOKEN_EXPIRY,
   });
@@ -19,7 +19,7 @@ const forgotPassword = async (req, res) => {
       res.status(202).json({ message: "User not found" });
     } else {
       const findUser = await ResetToken.findOne({ userId: user._id });
-      const token = resetToken(user._id);
+      const token = generateResetToken(user._id);
 
       if (findUser) {
         findUser.token = token;
@@ -52,9 +52,7 @@ const forgotPassword = async (req, res) => {
 
       transporter.sendMail(mailOptions, (error) => {
         if (error) {
-          return res
-            .status(500)
-            .json({ message: "Failed to send password reset email" });
+          return res.json({ message: "Failed to send password reset email" });
         } else {
           return res
             .status(200)
@@ -64,7 +62,6 @@ const forgotPassword = async (req, res) => {
     }
   } catch (error) {
     res.json(error);
-    // console.log(error);
   }
 };
 
@@ -76,15 +73,14 @@ const resetPassword = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const resetToken = await ResetToken.findOne({ userId: _id });
-
-    if (resetToken.used) {
+    const resetTokenDoc = await ResetToken.findOne({ userId: _id });
+    if (resetTokenDoc.used) {
       return res
         .status(202)
         .json({ msg: "A reset link can be used only once..." });
     }
-    resetToken.used = true;
-    await resetToken.save();
+    resetTokenDoc.used = true;
+    await resetTokenDoc.save();
 
     const user = await User.findByIdAndUpdate(
       _id,
