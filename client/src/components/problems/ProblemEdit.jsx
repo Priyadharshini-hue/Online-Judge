@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Form, Button, Modal } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useProblemState } from './ProblemState';
 import { useTestCaseState } from './TestCaseState';
 import ProblemForm from './ProblemForm';
 import TestCaseList from './TestCaseList';
 import AddTestCaseModal from './AddTestCaseModal';
-import { getProblemToEdit, updateProblem } from '../../services/api';
+import { getProblemToEdit, updateProblem } from '../../services/api'; 
 
 const ProblemEdit = () => {
     const { problemId } = useParams();
@@ -36,7 +35,8 @@ const ProblemEdit = () => {
 
                 console.log(problemData);
             } catch (error) {
-                console.error('Error fetching problem details: ', error);
+                // console.error('Error fetching problem details: ', error);
+                navigate('/error');
             }
         };
 
@@ -77,7 +77,8 @@ const ProblemEdit = () => {
                     }, 3000);
                 }
             } catch (error) {
-                console.log(error);
+                // console.log(error);
+                navigate('/error');
             }
         }
     }

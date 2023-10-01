@@ -7,6 +7,7 @@ import { useProblemState } from './ProblemState';
 import { useTestCaseState } from './TestCaseState';
 import { createProblem } from '../../services/api';
 import { useAuth } from "../../context/AuthContext";
+import { Navigate } from 'react-router-dom';
 
 const AddProblem = () => {
 
@@ -51,12 +52,13 @@ const AddProblem = () => {
                     errors: {}
                 })
 
-                console.log(result);
-
                 setMessage(result.data.message);
 
             } catch (error) {
-                console.log(error);
+                // console.log(error);
+                if (error) {
+                    return <Navigate to="/error" />;
+                }
             }
         }
     }
