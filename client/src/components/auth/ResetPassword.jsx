@@ -15,7 +15,6 @@ const ResetPassword = () => {
         e.preventDefault();
 
         if (Object.values(resetPasswordFormState.errorMessage).every((error) => error === '')) {
-            console.log(resetPasswordFormState);
             try {
                 const result = await resetPassword(resetPasswordFormState.password, token);
 
@@ -34,7 +33,6 @@ const ResetPassword = () => {
                 } else if (result.status === 201) {
                     setMessage(result.data.msg);
                 }
-                console.log(result);
             } catch (error) {
                 console.log(error);
             }

@@ -10,8 +10,7 @@ const ForgotPassword = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(e);
-
+        
         if (forgotPasswordFormState.errorMessage === '') {
             try {
                 setMessage('loading....');

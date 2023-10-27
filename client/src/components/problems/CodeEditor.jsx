@@ -59,8 +59,7 @@ const CodeEditor = ({ problemId }) => {
 
       setLoading(false);
       setMessage(result.message);
-    } catch (error) {
-      // console.log(error);
+    } catch (error) { 
       if (error) {
         return <Navigate to="/error" />;
       }

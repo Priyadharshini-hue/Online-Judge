@@ -34,7 +34,6 @@ const fetchProblems = async (req, res) => {
 };
 
 const getProblem = async (req, res) => {
-  console.log(req.body);
   try {
     const problem = await problemModel.findById(req.params.problemId);
 
@@ -64,7 +63,6 @@ const updateProblem = async (req, res) => {
   }
 };
 
-// delete problem
 const deleteProblem = async (req, res) => {
   const problem = await problemModel.findByIdAndDelete(req.params.problemId);
   try {

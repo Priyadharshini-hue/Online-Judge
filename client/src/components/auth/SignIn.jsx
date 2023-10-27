@@ -25,8 +25,7 @@ const SignIn = () => {
         if (password.trim().length !== password.length) {
             errors.password = 'Password Should not contain whitespace';
         }
-        setErrors(errors);
-        console.log(errors);
+        setErrors(errors); 
         return Object.keys(errors).length === 0;
     }
 
@@ -35,8 +34,7 @@ const SignIn = () => {
         event.preventDefault();
 
         if (inputValidation()) {
-            const result = await getUser({ email, password });
-            console.log(result);
+            const result = await getUser({ email, password }); 
             if (result.status === 201) {
                 setMessage(result.data.message);
             } else if (result.status === 202) {

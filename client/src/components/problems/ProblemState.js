@@ -40,12 +40,9 @@ export function useProblemState() {
   };
 
   const deleteTestCase = (index) => {
-    return () => {
-      console.log(`Delete test case ${index}`);
-      const updatedTestCases = [...problemState.testCases];
-      console.log(problemState.testCases);
-      updatedTestCases.splice(index, 1);
-      console.log(updatedTestCases);
+    return () => { 
+      const updatedTestCases = [...problemState.testCases]; 
+      updatedTestCases.splice(index, 1); 
       setProblemState({
         ...problemState,
         testCases: updatedTestCases,

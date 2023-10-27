@@ -18,8 +18,7 @@ const AddProblem = () => {
     const { token } = useAuth();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(problemState);
+        e.preventDefault(); 
 
         if (problemState.testCases.length === 0) {
             setProblemState({
@@ -54,8 +53,7 @@ const AddProblem = () => {
 
                 setMessage(result.data.message);
 
-            } catch (error) {
-                // console.log(error);
+            } catch (error) { 
                 if (error) {
                     return <Navigate to="/error" />;
                 }

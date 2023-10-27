@@ -22,9 +22,7 @@ const PaginationComponent = ({ maxPagesInRow, totalPages, currentPage, paginate 
   const renderPagination = () => {
     if (totalPages <= maxPagesInRow) {
       return renderPageNumbers();
-    } else {
-      // console.log(Math.max(currentPage - Math.floor(maxPagesInRow / 2) - 1, 0));
-      // console.log (Math.min(currentPage + Math.floor(maxPagesInRow / 2), totalPages)); 
+    } else { 
       const pagesToDisplay = renderPageNumbers().slice(
         Math.max(currentPage - Math.floor(maxPagesInRow / 2) - 1, 0),
         Math.min(currentPage + Math.floor(maxPagesInRow / 2), totalPages)

@@ -150,8 +150,7 @@ export const deleteProblem = async (token, problemId) => {
   }
 };
 
-export const submitProblem = async (data, token) => {
-  console.log(data);
+export const submitProblem = async (data, token) => { 
   try {
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -162,11 +161,9 @@ export const submitProblem = async (data, token) => {
       {
         headers,
       }
-    );
-    // console.log('runProblem response:', response);
+    ); 
     return response.data;
-  } catch (error) {
-    // console.error("Error in runProblem:", error);
+  } catch (error) { 
     return error;
   }
 };
@@ -198,8 +195,7 @@ export const fetchScores = async (token) => {
       }
     );
     return response.data.data;
-  } catch (error) {
-    console.error(error);
+  } catch (error) { 
     return error;
   }
 };

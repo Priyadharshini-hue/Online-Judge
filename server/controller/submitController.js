@@ -50,26 +50,22 @@ const executeCode = (filePath, language, inputPath) => {
   let executeCmd;
 
   switch (language) {
-    case "java": 
-      // executeCmd = `javac -d ${outputDirectory} ${filePath} && java -cp ${outputDirectory} ${jobId} < ${inputPath}`;
+    case "java":
       executeCmd = `docker exec ${dockerContainerId} sh -c "javac -d app/outputs /app/codes/${jobId}.java  && java -cp app/outputs ${jobId} < /app/inputs/${
         path.basename(inputPath).split(".")[0]
       }.txt"`;
       break;
     case "py":
-      // executeCmd = `python ${filePath} < ${inputPath}`;
       executeCmd = `docker exec ${dockerContainerId} sh -c "python -u /app/codes/${jobId}.py < /app/inputs/${
         path.basename(inputPath).split(".")[0]
       }.txt"`;
       break;
     case "c":
-      // executeCmd = `gcc ${filePath} -o ${outputPath} && ${outputPath} < ${inputPath}`;
       executeCmd = `docker exec ${dockerContainerId} sh -c "gcc /app/codes/${jobId}.c -o /app/outputs/${jobId}.exe && /app/outputs/${jobId}.exe < /app/inputs/${
         path.basename(inputPath).split(".")[0]
       }.txt"`;
       break;
     case "cpp":
-      // executeCmd = `g++ ${filePath} -o ${outputPath} && ${outputPath} < ${inputPath}`;
       executeCmd = `docker exec ${dockerContainerId} sh -c "g++ /app/codes/${jobId}.cpp -o /app/outputs/${jobId}.exe && /app/outputs/${jobId}.exe < /app/inputs/${
         path.basename(inputPath).split(".")[0]
       }.txt"`;
@@ -91,8 +87,7 @@ const executeCode = (filePath, language, inputPath) => {
 
 let dockerContainerId;
 
-const startDockerContainer = (dockerImage) => {
-  // Define the Docker command to start the container
+const startDockerContainer = (dockerImage) => { 
   const dockerCmd = `docker run -d -v ${outputDirectory}:/app/outputs -v ${dirCodes}:/app/codes -v ${dirInput}:/app/inputs ${dockerImage}`;
 
   return new Promise((resolve, reject) => {
@@ -100,8 +95,7 @@ const startDockerContainer = (dockerImage) => {
       if (error) {
         reject(error);
       } else {
-        dockerContainerId = stdout.trim(); // Store the container ID
-        // console.log(dockerContainerId);
+        dockerContainerId = stdout.trim();   
         resolve();
       }
     });
@@ -110,10 +104,9 @@ const startDockerContainer = (dockerImage) => {
 
 const stopDockerContainer = () => {
   if (!dockerContainerId) {
-    return Promise.resolve(); // No container to stop
+    return Promise.resolve();  
   }
-
-  // Define the Docker command to stop and remove the container
+ 
   const dockerCmd = `docker stop ${dockerContainerId} && docker rm ${dockerContainerId}`;
 
   return new Promise((resolve, reject) => {
@@ -159,9 +152,8 @@ const submitProblem = async (req, res) => {
       difficult: 30,
     };
     const userScore = scoringSystem[problem.difficulty];
-
-    // Start the Docker container at the beginning
-    const dockerImage = "img"; // Replace with your Docker image
+ 
+    const dockerImage = "img";  
     await startDockerContainer(dockerImage);
 
     for (let i = 0; i < testCases.length; i++) {
@@ -175,9 +167,7 @@ const submitProblem = async (req, res) => {
       const executionEndTime = performance.now();
       const executionTime = executionEndTime - executionStartTime;
 
-      const output = rawOutput.replace(/\r\n/g, "\n").trim();
-
-      // console.log(rawOutput + "" + output);
+      const output = rawOutput.replace(/\r\n/g, "\n").trim(); 
 
       if (output !== testCase.output) {
         submissionStatus = `Test cases ${i + 1} failed`;
@@ -205,9 +195,7 @@ const submitProblem = async (req, res) => {
     }
     await stopDockerContainer();
     return res.json({ message: "Code Accepted" });
-
-  } catch (error) {
-    // console.log(error);
+  } catch (error) { 
     errorInfo = {
       message: error.message || "Compilation error",
       stack: error.stack || "",
